@@ -22,13 +22,14 @@ blogController.createBlog = catchAsync(async (req, res) => {
 blogController.updateBlog = catchAsync(async (req, res, next) => {
     const author = req.userId;
     const blogId = req.params.id;
-    const { title, pictureUrl, content } = req.body;
+    const { title, pictureUrl, content, tag } = req.body;
     const blog = await Blog.findOneAndUpdate(
         { _id: blogId, author: author },
         {
             content: content,
             title: title,
             pictureUrl, pictureUrl,
+            tag: tag,
         },
         { new: true }
     );
@@ -94,14 +95,17 @@ blogController.getSingleBlog = catchAsync(async (req, res) => {
 })
 
 blogController.getAllBlog = catchAsync(async (req, res, next) => {
+    let { sortBy } = req.body;
+
     let { page, limit, tag } = { ...req.query }
     filter = {
         $and: [{ isDeleted: false }]
     }
     //how to filter 
-    // if (minPrice) filter.$and.push({ price: { $gte: minPrice } })
+    if (tag) filter.$and.push({ tag: tag })
     // if (maxPrice) filter.$and.push({ price: { $lte: maxPrice } })
-
+    sortBy = req.body.sortBy || "createdAt"
+    console.log(sortBy)
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
     const totalBlogs = await Blog.find(filter).countDocuments()
@@ -109,7 +113,7 @@ blogController.getAllBlog = catchAsync(async (req, res, next) => {
     const totalPages = Math.ceil(totalBlogs / limit);
     const offset = limit * (page - 1);
     const blogs = await Blog.find(filter)
-        .sort({ createdAt: -1 })
+        .sort({ sortBy: -1 })
         .skip(offset)
         .limit(limit)
         .populate("author");

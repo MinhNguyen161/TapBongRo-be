@@ -22,7 +22,7 @@ productController.createProduct = catchAsync(async (req, res) => {
 //==================================================================
 productController.updateProduct = catchAsync(async (req, res, next) => {
     const itemId = req.params.id;
-    const { name, price, clothing_type, quantity, product_info } = req.body;
+    const { name, price, clothing_type, quantity, product_info, pictureUrl } = req.body;
     const product = await Product.findOneAndUpdate(
         { _id: itemId, },
         {
@@ -30,6 +30,7 @@ productController.updateProduct = catchAsync(async (req, res, next) => {
             clothing_type: clothing_type,
             quantity: quantity,
             product_info: product_info,
+            pictureUrl: pictureUrl,
         },
         { new: true }
     );
