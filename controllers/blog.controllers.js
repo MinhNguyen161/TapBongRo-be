@@ -9,12 +9,13 @@ const blogController = {};
 
 blogController.createBlog = catchAsync(async (req, res) => {
     const userId = req.userId;
-    const { title, pictureUrl, content } = req.body;
+    const { title, pictureUrl, content, tag } = req.body;
     const blog = await Blog.create({
         title,
         pictureUrl,
         content,
         author: userId,
+        tag,
     })
     return sendResponse(res, 200, true, blog, null, "Successfully created an Blog")
 })
@@ -41,6 +42,44 @@ blogController.updateBlog = catchAsync(async (req, res, next) => {
         );
     return sendResponse(res, 200, true, blog, null, "Update Blog successful");
 });
+blogController.upVote = catchAsync(async (req, res) => {
+    const blogId = req.params.id;
+    const blog = await Blog.findOneAndUpdate(
+        { _id: blogId, },
+        {
+            $inc: { likeCount: 1 }
+        },
+        { new: true }
+    );
+    if (!blog)
+        return next(
+            new AppError(
+                400,
+                "Blog not found or User not authorized",
+                "UPVOTE Blog Error"
+            )
+        );
+    return sendResponse(res, 200, true, blog, null, "UPvote Blog   successful");
+})
+blogController.downVote = catchAsync(async (req, res) => {
+    const blogId = req.params.id;
+    const blog = await Blog.findOneAndUpdate(
+        { _id: blogId, },
+        {
+            $inc: { likeCount: -1 }
+        },
+        { new: true }
+    );
+    if (!blog)
+        return next(
+            new AppError(
+                400,
+                "Blog not found or User not authorized",
+                "DOWNVOTE Blog Error"
+            )
+        );
+    return sendResponse(res, 200, true, blog, null, "DOWNvote Blog successful");
+})
 
 blogController.getSingleBlog = catchAsync(async (req, res) => {
     let blog = await (await Blog.findById(req.params.id)) //NOTE add   .populate("author") sau
@@ -55,7 +94,7 @@ blogController.getSingleBlog = catchAsync(async (req, res) => {
 })
 
 blogController.getAllBlog = catchAsync(async (req, res, next) => {
-    let { page, limit } = { ...req.query }
+    let { page, limit, tag } = { ...req.query }
     filter = {
         $and: [{ isDeleted: false }]
     }

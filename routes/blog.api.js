@@ -58,7 +58,7 @@ router.get(
 router.post(
     "/reviews/:id",
     authMiddleware.loginRequired,
-    reviewController.createNewReview
+    reviewController.createNewReviewOfBlog
 );
 
 /**
@@ -80,9 +80,22 @@ router.put(
 router.delete(
     "/reviews/:id",
     authMiddleware.loginRequired,
-
     reviewController.deleteSingleReview
 );
+/**
+* @route /blogs/upVote/:id
+* @description get all blogs
+* @access Public
+*/
+
+router.post('/upvote/:id', authMiddleware.loginRequired, blogController.upVote); //  
+
+/**
+* @route /blogs/downVote/:id
+* @description GET an blog with ID
+* @access Public
+*/
+router.post('/downvote/:id', authMiddleware.loginRequired, blogController.downVote); //
 
 module.exports = router;
 

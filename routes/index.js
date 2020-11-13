@@ -5,7 +5,7 @@ const authApi = require("./auth.api");
 const blogApi = require("./blog.api")
 const productApi = require("./product.api")
 const cartApi = require("./cart.api")
-
+const favApi = require("./fav.api")
 //=============================================
 //// ANCHOR  userApi
 router.use("/users", userApi)
@@ -21,6 +21,8 @@ router.use("/cart", cartApi)
 //=============================================
 //// ANCHOR  Product Api Calls
 router.use("/products", productApi)
-
+//=============================================
+//// ANCHOR  favorites Api Calls
+router.use("/favs", favApi)
 
 module.exports = router;

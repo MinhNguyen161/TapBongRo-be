@@ -25,6 +25,8 @@ const schema = Schema({
         description: { type: String, required: true },
         measures: { type: String, required: true },
     },
+    reviewCount: { type: Number, default: 0 },
+    averageRating: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false }
 },
     { timestamps: true })

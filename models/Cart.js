@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 
 //================================
 //
-//  Model for a product like a shirt
+//  Model for  cart
 //
 //
 //================================
@@ -34,7 +34,7 @@ schema.post(/^findOneAndUpdate/, async function (doc) {
             doc.products.forEach(async item => {
                 const product = await Product.findOne({ _id: item.itemId });
                 product.quantity -= item.quantity;
-                product.save();
+                product.save(); ``
             })
         }
     } catch (err) {

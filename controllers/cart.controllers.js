@@ -67,7 +67,6 @@ cartController.getAllCarts = catchAsync(async (req, res) => {
 cartController.getCartContent = catchAsync(async (req, res) => {
     const userId = req.userId;    // ti chuyen ve userId tren front-end
     const cart = await Cart.findOne({ userId: userId, status: "onCart" }).populate("products.itemId")
-    console.log(cart.products.length);
     return sendResponse(res, 200, true, cart, null, "Get items success")
 })
 cartController.checkOut = catchAsync(async (req, res) => {

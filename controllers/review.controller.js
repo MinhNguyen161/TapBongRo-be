@@ -5,10 +5,54 @@ const {
 } = require("../helpers/utils.helper");
 const Review = require("../models/Review");
 const Blog = require("../models/Blog");
+const Product = require("../models/Product")
 
 const reviewController = {};
 
-reviewController.createNewReview = catchAsync(async (req, res, next) => {
+reviewController.createNewReviewOfProduct = catchAsync(async (req, res, next) => {
+    const userId = req.userId;
+    const productId = req.params.id;
+    const { content } = req.body;
+    const product = Product.findById(productId);
+    if (!product)
+        return next(new AppError(404, "Product not found", "Create New Review Error"));
+    let review = await Review.create({
+        user: userId,
+        product: productId,
+        content,
+    });
+    review = await review.populate("user").execPopulate();
+    return sendResponse(
+        res,
+        200,
+        true,
+        review,
+        null,
+        "Create new review successful"
+    );
+});
+
+reviewController.getReviewsOfProduct = catchAsync(async (req, res, next) => {
+    const productId = req.params.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const product = Product.findById(productId);
+    if (!product)
+        return next(new AppError(404, "Product not found", "Get  Reviews Error"));
+
+    const totalReviews = await Review.countDocuments({ product: productId });
+    const totalPages = Math.ceil(totalReviews / limit);
+    const offset = limit * (page - 1);
+
+    const reviews = await Review.find({ product: productId })
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit);
+
+    return sendResponse(res, 200, true, { reviews, totalPages }, null, "");
+});
+reviewController.createNewReviewOfBlog = catchAsync(async (req, res, next) => {
     const userId = req.userId;
     const blogId = req.params.id;
     const { content } = req.body;

@@ -18,7 +18,8 @@ const schema = Schema({
     content: { type: String, required: true },
     reviewCount: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
-    likeCount: { type: Number, default: 0 }
+    likeCount: { type: Number, default: 0 },
+    tag: { type: String }
 },
     { timestamps: true })
 const Blog = mongoose.model("Blog", schema);
