@@ -12,7 +12,8 @@ var indexRouter = require('./routes/index');
 const mongoose = require("mongoose");
 
 var app = express();
-mongoose.connect("mongodb://localhost/finalproject", { useNewUrlParser: true, useUnifiedTopology: true },)
+// mongoose.connect("mongodb://localhost/finalproject", { useNewUrlParser: true, useUnifiedTopology: true },)
+mongoose.connect("mongodb+srv://Minhlong123:Minhlong123@cluster0.l6kvb.mongodb.net/finalproject?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true },)
 const db = mongoose.connection
 db.once("open", function () {
     console.log("MongoDB database connection established successfully!");
